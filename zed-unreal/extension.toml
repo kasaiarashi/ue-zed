@@ -1,4 +1,3 @@
-[package]
 id = "zed-unreal"
 name = "Unreal Engine Integration"
 version = "1.0.0"
@@ -6,14 +5,3 @@ schema_version = 1
 authors = ["Krishna Teja Mekala <kasaiarashi@github.com>"]
 description = "Comprehensive Unreal Engine 5.6+ integration for Zed editor - Blueprint navigation, live logging, play control, and build integration via ZedLink plugin"
 repository = "https://github.com/kasaiarashi/zed-unreal"
-license = "MIT"
-
-[lib]
-kind = "open"
-languages = ["cpp"]
-language_servers = ["clangd"]
-
-[grammars]
-
-[language_servers.clangd]
-language = "cpp"

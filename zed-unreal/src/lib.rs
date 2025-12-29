@@ -1,24 +1,26 @@
 // Copyright Krishna Teja Mekala. All Rights Reserved.
 // Unreal Engine Integration for Zed Editor
 
+#![allow(dead_code)]
+
 use zed_extension_api::{self as zed, Result};
 use std::fs;
 use std::path::Path;
 
 /// Main extension struct for Unreal Engine integration
 struct UnrealExtension {
-    /// Cached path to the helper binary
-    helper_path: Option<String>,
+    /// Cached path to the helper binary (for future use)
+    _helper_path: Option<String>,
 }
 
 impl zed::Extension for UnrealExtension {
     fn new() -> Self {
-        Self { helper_path: None }
+        Self { _helper_path: None }
     }
 
     fn language_server_command(
         &mut self,
-        language_server_id: &zed::LanguageServerId,
+        _language_server_id: &zed::LanguageServerId,
         worktree: &zed::Worktree,
     ) -> Result<zed::Command> {
         // Use clangd for C++ LSP support

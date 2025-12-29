@@ -1,6 +1,8 @@
 // Copyright Krishna Teja Mekala. All Rights Reserved.
 // Protocol types for ZedLink JSON-RPC communication
 
+#![allow(dead_code)]
+
 use serde::{Deserialize, Serialize};
 
 /// JSON-RPC notification (no response expected)

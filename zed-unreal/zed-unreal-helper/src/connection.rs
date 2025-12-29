@@ -1,6 +1,8 @@
 // Copyright Krishna Teja Mekala. All Rights Reserved.
 // TCP connection handler for ZedLink communication
 
+#![allow(dead_code)]
+
 use anyhow::{anyhow, Result};
 use serde::{Deserialize, Serialize};
 use std::sync::atomic::{AtomicU64, Ordering};

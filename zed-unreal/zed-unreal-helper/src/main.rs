@@ -3,7 +3,7 @@
 
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 mod connection;
 mod protocol;
@@ -149,7 +149,7 @@ async fn main() -> Result<()> {
 }
 
 /// Try to read port from ZedLink.port file, fall back to specified port
-fn resolve_port(default_port: u16, project_dir: Option<&PathBuf>) -> u16 {
+fn resolve_port(default_port: u16, project_dir: Option<&Path>) -> u16 {
     if let Some(dir) = project_dir {
         let port_file = dir.join("Intermediate").join("ZedLink.port");
         if let Ok(contents) = std::fs::read_to_string(&port_file) {
