@@ -1,0 +1,22 @@
+[package]
+name = "zed-unreal-helper"
+version = "1.0.0"
+edition = "2021"
+license = "MIT"
+authors = ["Krishna Teja Mekala"]
+description = "Helper binary for Zed Unreal Engine integration - handles TCP communication with ZedLink plugin"
+repository = "https://github.com/kasaiarashi/zed-unreal"
+
+[[bin]]
+name = "zed-unreal-helper"
+path = "src/main.rs"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+clap = { version = "4", features = ["derive"] }

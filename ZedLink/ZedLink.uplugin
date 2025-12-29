@@ -1,0 +1,25 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0.0",
+	"FriendlyName": "ZedLink",
+	"Description": "Enables integration between Unreal Editor and Zed code editor. Provides live logging, Blueprint navigation, play control, and build integration.",
+	"Category": "Editor",
+	"CreatedBy": "Krishna Teja Mekala",
+	"CreatedByURL": "https://github.com/kasaiarashi",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"EnabledByDefault": true,
+	"CanContainContent": false,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "ZedLink",
+			"Type": "Editor",
+			"LoadingPhase": "PostEngineInit"
+		}
+	]
+}

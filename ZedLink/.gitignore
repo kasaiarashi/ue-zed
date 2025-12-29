@@ -1,0 +1,27 @@
+# Unreal Engine Plugin Build Artifacts
+Binaries/
+Intermediate/
+DerivedDataCache/
+Saved/
+
+# Visual Studio
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+.vs/
+
+# Xcode
+*.xcworkspace
+*.xcodeproj
+xcuserdata/
+
+# JetBrains Rider
+.idea/
+
+# macOS
+.DS_Store
+
+# Generated files
+*.generated.h
+*.gen.cpp

@@ -1,0 +1,20 @@
+# Rust / Cargo
+target/
+**/*.rs.bk
+Cargo.lock
+
+# Compiled WASM
+*.wasm
+lib/
+
+# Extension distribution
+dist/
+*.tar.gz
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.iml

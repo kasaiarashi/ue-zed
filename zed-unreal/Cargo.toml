@@ -1,0 +1,19 @@
+[package]
+name = "zed-unreal"
+version = "1.0.0"
+edition = "2021"
+license = "MIT"
+authors = ["Krishna Teja Mekala"]
+description = "Unreal Engine integration extension for Zed editor"
+repository = "https://github.com/kasaiarashi/zed-unreal"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+zed_extension_api = "0.7"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[workspace]
+members = ["zed-unreal-helper"]
