@@ -46,7 +46,7 @@ public:
 	TArray<FString> FindBlueprintReferences(const FString& ClassName);
 
 private:
-	void OnBlueprintCompiled(UBlueprint* Blueprint);
+	void OnBlueprintCompiled();
 	void SubscribeToBlueprintEvents();
 	void UnsubscribeBlueprintEvents();
 

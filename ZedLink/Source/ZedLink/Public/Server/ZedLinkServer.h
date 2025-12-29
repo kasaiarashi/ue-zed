@@ -25,8 +25,8 @@ public:
 	/** Start the server on the specified port */
 	bool Start(int32 Port = 21567);
 
-	/** Stop the server and close all connections */
-	void Stop();
+	/** Stop the server and close all connections (overrides FRunnable::Stop) */
+	virtual void Stop() override;
 
 	/** Check if server is running */
 	bool IsRunning() const { return bIsRunning; }
@@ -55,7 +55,6 @@ protected:
 	// FRunnable interface
 	virtual bool Init() override;
 	virtual uint32 Run() override;
-	virtual void Stop() override { bShouldStop = true; }
 	virtual void Exit() override;
 
 private:

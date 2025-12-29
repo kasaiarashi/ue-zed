@@ -216,15 +216,37 @@ void FZedLinkServer::HandleClientData()
 
 	// Check for pending data
 	uint32 PendingDataSize = 0;
-	if (!ClientSocket->HasPendingData(PendingDataSize) || PendingDataSize == 0)
+	bool bHasPendingData = ClientSocket->HasPendingData(PendingDataSize);
+
+	if (!bHasPendingData || PendingDataSize == 0)
 	{
+		// Try to read anyway with a small timeout - HasPendingData can be unreliable with non-blocking sockets
+		static int32 DebugCounter = 0;
+		if (++DebugCounter % 1000 == 0) // Log every 1000 checks to avoid spam
+		{
+			UE_LOG(LogZedLink, VeryVerbose, TEXT("No pending data (counter: %d)"), DebugCounter);
+		}
 		return;
 	}
 
-	FString Message;
-	if (ReceiveMessage(ClientSocket, Message))
+	UE_LOG(LogZedLink, VeryVerbose, TEXT("Pending data: %u bytes"), PendingDataSize);
+
+	// Read and process all available messages
+	while (bHasPendingData && PendingDataSize > 0)
 	{
-		ProcessMessage(Message);
+		FString Message;
+		if (ReceiveMessage(ClientSocket, Message))
+		{
+			UE_LOG(LogZedLink, VeryVerbose, TEXT("Received message: %s"), *Message.Left(200));
+			ProcessMessage(Message);
+		}
+		else
+		{
+			break;
+		}
+
+		// Check if more data is available
+		bHasPendingData = ClientSocket->HasPendingData(PendingDataSize);
 	}
 }
 
@@ -237,16 +259,30 @@ bool FZedLinkServer::ReceiveMessage(FSocket* Socket, FString& OutMessage)
 
 	// Read 4-byte length prefix (big-endian)
 	uint8 LengthBuffer[4];
-	int32 BytesRead = 0;
+	int32 TotalBytesRead = 0;
 
-	if (!Socket->Recv(LengthBuffer, 4, BytesRead, ESocketReceiveFlags::WaitAll))
+	// Read length prefix (handle partial reads for non-blocking socket)
+	while (TotalBytesRead < 4)
 	{
-		return false;
-	}
+		int32 BytesRead = 0;
+		if (!Socket->Recv(LengthBuffer + TotalBytesRead, 4 - TotalBytesRead, BytesRead, ESocketReceiveFlags::None))
+		{
+			return false;
+		}
 
-	if (BytesRead != 4)
-	{
-		return false;
+		if (BytesRead == 0)
+		{
+			// No data available right now (non-blocking)
+			return false;
+		}
+
+		if (BytesRead < 0)
+		{
+			UE_LOG(LogZedLink, Warning, TEXT("Socket recv error while reading length prefix"));
+			return false;
+		}
+
+		TotalBytesRead += BytesRead;
 	}
 
 	uint32 MessageLength = (static_cast<uint32>(LengthBuffer[0]) << 24) |
@@ -260,7 +296,7 @@ bool FZedLinkServer::ReceiveMessage(FSocket* Socket, FString& OutMessage)
 		return false;
 	}
 
-	// Read message body
+	// Read message body (handle partial reads for non-blocking socket)
 	TArray<uint8> MessageBuffer;
 	MessageBuffer.SetNumUninitialized(MessageLength + 1);
 
@@ -268,13 +304,23 @@ bool FZedLinkServer::ReceiveMessage(FSocket* Socket, FString& OutMessage)
 	while (TotalRead < static_cast<int32>(MessageLength))
 	{
 		int32 Read = 0;
-		if (!Socket->Recv(MessageBuffer.GetData() + TotalRead, MessageLength - TotalRead, Read, ESocketReceiveFlags::WaitAll))
+		if (!Socket->Recv(MessageBuffer.GetData() + TotalRead, MessageLength - TotalRead, Read, ESocketReceiveFlags::None))
 		{
+			UE_LOG(LogZedLink, Warning, TEXT("Socket recv error while reading message body"));
 			return false;
 		}
 
-		if (Read <= 0)
+		if (Read == 0)
 		{
+			// No more data available right now, but we haven't read the full message
+			// This shouldn't happen if HasPendingData reported correct size
+			UE_LOG(LogZedLink, Warning, TEXT("Incomplete message: expected %u bytes, got %d bytes"), MessageLength, TotalRead);
+			return false;
+		}
+
+		if (Read < 0)
+		{
+			UE_LOG(LogZedLink, Warning, TEXT("Socket error while reading message"));
 			return false;
 		}
 

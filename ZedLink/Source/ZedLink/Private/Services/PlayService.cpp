@@ -6,7 +6,6 @@
 
 #include "Editor.h"
 #include "LevelEditor.h"
-#include "ILevelViewport.h"
 #include "UnrealEdGlobals.h"
 #include "Editor/UnrealEdEngine.h"
 #include "Settings/LevelEditorPlaySettings.h"
